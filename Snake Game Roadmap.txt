@@ -1,0 +1,106 @@
+﻿- Plan:
+1. Create a blank canvas & Game Loop           
+2. Create the food
+3. Create the snake
+4. Move the snake
+5. Make snake eat food
+6. Make snake grow
+7. Check for collisions against wall & tail
+8. Add title & frame
+9. Keep score
+10. Add sounds
+
+
+- Structure of Game:
+Part 1: Definitions. (Organs)
+    Defining the needed variables
+    Creating the game objects
+Part 2: Game Loop. (Heartbeat)
+    Updating positions of game objects
+    Checking for collisions
+    
+    Parts of the Gameloop:
+    1. Event Handling
+        Checking for what's happening in the game rn (quitting the game, which key is being pressed, etc)
+    2. Updating Positions of all game objects based on Step 1
+    3. Drawing Objects based on their updated positions.
+
+
+- Coordinate System:
+The Computer Graphics Coordinate System starts from the top left being (0,0), unlike the Cartesian system which starts at the bottom left. It's basically the same just flipped upside down. The downward vertical is the +Y graph, and the right horizontal is the +X graph. Going up is -Y, Going left is -X.
+
+
+- Colors:
+There are built-in colors in raylib like BLACK, GREEN, etc. But we can also make our own colors. Colors in raylib are made with a struct Color {red, green, blue, alpha} using its rgba values. So for our color we just need to make our own Object of this struct with these values.
+
+
+- To make it easy for us to locate our food objects and snake growth, we will create a grid in the window, which we will later hide but will still be there for the Coordinate system.
+
+
+- The food: 
+What do we need to know?
+    Coordinates: x,y
+        For this, we have a vector2 struct in raylib, which is an ordered pair of x,y. Makes it easier than to handle two separate integer variables.
+How to draw?
+    -make a new method with void returntype
+    -raylib offers functions for drawing simple shapes like DrawRectangle(x,y,width,heigh,color). Let's try that for initialising the food
+    -for the sprite, we use a simple png image and use the LoadImage() function to load it. The parameter for this function is a string with the path to the image (if the folder is inside ur game folder, you can skip the part of the path to your game folder)
+    -but all this does is make an image object that contains an image. To make it into a texture, we use LoadTextureFromImage() function
+    -for the texture, we initialise a Texture2D object to hold the texture. This datatype communicates with the GPU for displaying th texture.
+
+
+- The snake:
+Deque data Structure:
+    It's a type of array that allows us to add and remove element from both ends of the array efficiently. Unlike a vector, which does allow that but is very slow for front elements because you have to shift all the other elements. Unlike a stack, which is LIFO, and unlike a queue, which is FIFO. Deque is defined just like a vector.
+Drawing snake  
+    We can use the DrawRectangle(x,y,w,h,c) function but there's a better function called DrawRectangleRounded() that takes 4 parameters:
+        An object of the struct Rectangle {float x, float y, float width, float height}
+            x,y -> coordinates of the top left corner
+            w,h -> dimensions of rectangle in pixels
+        A float value of roundness
+            a value between 0.0 and 1.0 (0=sharp, 0.25=soft rounded corners, 0.5 = smooth rounded corners, 1.0 = fully circular ends (pill shape))
+        An int value of the no. of segments
+            How many segments in the curve?
+                4 = blocky
+                8 = decent, maybe pixelly
+                12 = smooth
+                16+ = overkill smoothness
+        A colour object
+
+
+- Growing the snake:
+The snake grows when it eats, so we need to record once its eaten an apple.
+When it grows, we need to add the new cell to the front of the snake because it looks smoother
+When it grows, it can't move at the same time or it'll look unnatural, so if it's growing, we need to stop it moving for that single frame.
+
+
+- Prettifying the grid
+1. The frame   
+    We use the DrawRectangleLinesEx() function to draw outline of rectangle
+    Ex stands for Extended, this is a bettered version of DrawRectangleLines()
+    @param:
+        Rectangle rec = {x, y, w, h} (coordinates of the top left corner, dimensions)
+        float lineThick = how thick the outline of the rectangle should be
+            0.1f = very thin
+            2.0f-4.0f = normal UI outline
+            6.0f = chunky, stylized
+        Color color = color object
+2. Game title   
+    We use the DrawText() function
+    @param:
+        const char* = What the text is
+        x,y = coordinates of text starting point
+        fontSize = an integer value
+        Color = color object
+3. Score 
+    We use the DrawText() function again with its const char* parameter using 
+    the TextFormat() function
+    @param:
+        const char* format: A string literal ending in % followed by a specifier for what datatype you're converting into a char* output (eg. %i for int)
+        ...: the variable
+    
+
+
+-STEP BY STEP PROCESS
+//#1 create blank window
+1. include raylib and iostream.
